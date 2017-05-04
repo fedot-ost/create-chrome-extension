@@ -34,6 +34,7 @@ class ExtensionBuilder {
     clearBuildFolder() {
         // delete all from destination folder
         FS.readdir(DESTINATION_FOLDER, (err, files) => {
+            if (err) return;
             for (let i = 0; i < files.length; i++) {
                 FS.unlink(`${DESTINATION_FOLDER}/${files[i]}`, (err) => {
                     if (err) {
