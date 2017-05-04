@@ -1,6 +1,7 @@
 {
   "devDependencies": {
     "file-system": "^2.2.2",
-    "fs-extra": "^3.0.0"
+    "fs-extra": "^3.0.0",
+    "prompt": "^1.0.0"
   }
 }
