@@ -2,6 +2,7 @@ const FS = require('fs-extra');
 const PROMPT = require('PROMPT');
 const DESTINATION_FOLDER = './build';
 const SOURCE_FOLDER = './source';
+const OPTIONAL_FOLDER = './optional';
 const MESSAGES = {
     DELETE_ERROR: 'Can not delete file'
 };
@@ -15,7 +16,8 @@ const DEFAULT_DATA = {
 };
 const USER_DATA = {
     name: 'Please enter project name',
-    description: 'Please enter project description'
+    description: 'Please enter project description',
+    customizable: 'Do you need make your app customizable?(y/n)'
 };
 let questions = [];
 for (let prop in USER_DATA) {
@@ -53,7 +55,22 @@ class ExtensionBuilder {
                     FS.readFile(`${SOURCE_FOLDER}/${fileName}`, 'utf8', (err, data) => {
                         if (err) return;
                         data = data.replace(DEFAULT_DATA.name, questions[USER_DATA.name]).replace(DEFAULT_DATA.description, questions[USER_DATA.description]);
-                        FS.writeFile(`${DESTINATION_FOLDER}/${fileName}`, data);
+                        if (questions[USER_DATA.customizable] == 'y') {
+                            FS.readFile(`${OPTIONAL_FOLDER}/isConfigurableSetting.json`, 'utf8', (err2, content) => {
+                                if (!err2) {
+                                    let completeData = JSON.stringify(Object.assign(JSON.parse(data), JSON.parse(content)));
+                                    FS.writeFile(`${DESTINATION_FOLDER}/${fileName}`, completeData);
+                                    // save options.html file
+                                    FS.readFile(`${OPTIONAL_FOLDER}/options.html`, (optReadErr, options) => {
+                                        FS.writeFile(`${DESTINATION_FOLDER}/options.html`, options);
+                                    });
+                                } else {
+                                    console.log(err2);
+                                }
+                            });
+                        } else {
+                            FS.writeFile(`${DESTINATION_FOLDER}/${fileName}`, data);
+                        }
                     });
                 }
                 else if (fileName == CONFIGURABLE_FILES.popup) {
@@ -69,8 +86,10 @@ class ExtensionBuilder {
                     );
                 }
             });
-            console.log('YOUR EXTENSION WAS BUILT');
         });
+    }
+    buildingFinish() {
+        console.log('YOUR EXTENSION WAS BUILT');
     }
 }
 
