@@ -1,4 +1,5 @@
 const FS = require('fs-extra');
+const IMAGE = require('jimp');
 const PROMPT = require('PROMPT');
 const DESTINATION_FOLDER = './build';
 const SOURCE_FOLDER = './source';
@@ -29,6 +30,7 @@ class ExtensionBuilder {
         PROMPT.get(questions, (err, result) => {
             if (err) return;
             questions = result;
+            this.createIconOfExtension();
             this.clearBuildFolder();
             this.buildExtension();
         });
@@ -46,6 +48,19 @@ class ExtensionBuilder {
                 });
             }
         });
+    }
+    createIconOfExtension() {
+        let iconText = questions[USER_DATA.name][0].toUpperCase(); //first symbol of project name
+         new IMAGE(128, 128, 0x000000, (err, image) => {
+             if (!err) {
+                 IMAGE.loadFont(IMAGE.FONT_SANS_128_BLACK).then((font) => {
+                     image
+                         .print(font, 20, 0, iconText)
+                         .write(`${DESTINATION_FOLDER}/icon.png`)
+                         .write(`${DESTINATION_FOLDER}/icon_128.png`);
+                 });
+             }
+         });
     }
     buildExtension() {
         FS.readdir(SOURCE_FOLDER, (err, files) => {

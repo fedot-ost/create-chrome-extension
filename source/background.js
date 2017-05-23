@@ -1,6 +1,9 @@
 class FW{
-    static addBadge() {
-    
+    static addBadgeText(text) {
+        chrome.browserAction.setBadgeText({text: text});
+    }
+    static getBadgeText(callBack) {
+        chrome.browserAction.getBadgeText({}, callBack);
     }
     static getCurrentURL() {
          return document.location.href;
@@ -29,4 +32,10 @@ chrome.runtime.onMessage.addListener((type, sender, callBack) => {
     }
 });
 
-// FW.addBadge();
+// example
+
+FW.addBadgeText('123');
+
+FW.getBadgeText((badgeText) => {
+    console.log(badgeText);
+});

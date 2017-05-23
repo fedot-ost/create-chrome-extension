@@ -25,12 +25,23 @@ class FW{
     }
 }
 
-// example
+// example of data, got from web-page
 
 let currentUrl;
+let cookie;
+let LS;
 
-FW.getCurrentURL(
-    function (url) {
-        currentUrl = url;
-    }
-);
+FW.getCurrentURL((url) => {
+    currentUrl = url;
+    console.log('currentUrl ', currentUrl);
+});
+
+FW.getCookie((responsedCookie) => {
+    cookie = responsedCookie;
+    console.log('cookie ', cookie);
+})
+
+FW.getLocalStorage((localstorage) => {
+    LS = localstorage;
+    console.log('localstorage ',localstorage);
+})
